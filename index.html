@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Braze Web SDK Sandbox</title>
+</head>
+<body>
+  <h1>Braze Web SDK Sandbox</h1>
+
+  <button onclick="startBraze()">Start Session</button>
+  <button onclick="loginUser()">Login User</button>
+  <button onclick="triggerEvent()">Trigger Engagement</button>
+
+  <!-- Braze SDK -->
+  <script type="text/javascript">
+    +function(a,p,P,b,y){a.braze={};a.brazeQueue=[];for(var s="changeUser initialize openSession logCustomEvent automaticallyShowInAppMessages setLogger requestImmediateDataFlush".split(" "),i=0;i<s.length;i++){a.braze[s[i]]=function(){a.brazeQueue.push(arguments)}}(window,document,'script');
+  </script>
+
+  <script src="https://js.appboycdn.com/web-sdk/6.5/braze.min.js" async></script>
+  <!-- Initializing Braze -->
+<script>
+  function startBraze() {
+    braze.initialize("88884959-92fe-4bd7-ab6b-6660b1c9e859", {
+      baseUrl: "sondheim.braze.com",
+      enableLogging: true
+    });
+
+    braze.automaticallyShowInAppMessages();
+    braze.openSession();
+
+    console.log("Braze session started");
+  }
+</script>
+
+  <!-- Implement changeUser() -->
+
+  <script>
+  function loginUser() {
+    const userId = "web_sdk_user_" + Date.now();
+
+    braze.changeUser(userId);
+    braze.getUser().setFirstName("WebSDK");
+    braze.getUser().setEmail(userId + "@example.com");
+
+    braze.requestImmediateDataFlush();
+
+    console.log("Changed user to:", userId);
+  }
+</script>
+
