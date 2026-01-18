@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <!-- Basic page metadata -->
   <meta charset="UTF-8" />
   <title>Braze Web SDK SEL Sandbox</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="shortcut icon" href="#" />
 
+  <!-- Simple styling to make the sandbox readable and demo-friendly -->
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -43,13 +45,25 @@
     }
   </style>
 
-  <!-- Braze Web SDK Loader -->
+  <!--
+    Braze Web SDK Loader (Asynchronous)
+    ----------------------------------
+    This snippet creates a temporary queue so Braze API calls can be made
+    before the SDK finishes loading. Once loaded, the SDK processes the queue.
+
+    This is the recommended integration pattern from Braze docs.
+  -->
   <script type="text/javascript">
     +function(a,p,P,b,y){
-      a.braze={};a.brazeQueue=[];
+      a.braze={};
+      a.brazeQueue=[];
+
+      // Define the Braze methods we will use in this sandbox
       for(var s="initialize openSession changeUser logCustomEvent automaticallyShowInAppMessages getUser requestImmediateDataFlush toggleLogging".split(" "),i=0;i<s.length;i++){
         a.braze[s[i]]=function(){a.brazeQueue.push(arguments);}
       }
+
+      // Load the Braze SDK from the CDN
       (y=p.createElement(P)).type='text/javascript';
       y.src='https://js.appboycdn.com/web-sdk/6.5/braze.min.js';
       y.async=1;
@@ -60,6 +74,7 @@
 
 <body>
 
+  <!-- Simple UI for triggering SDK behavior -->
   <div class="container">
     <h1>Braze SEL Sandbox</h1>
     <p class="status">Open DevTools Console to view SDK logs</p>
@@ -70,9 +85,21 @@
   </div>
 
   <script>
+    /*
+      This flag ensures that the Braze SDK is initialized only once.
+      Re-initializing the SDK can cause configuration options (such as
+      allowUserSuppliedJavascript) to be ignored.
+    */
     let brazeInitialized = false;
 
-    // 1. Initialize Braze SDK (ONLY ONCE)
+    /*
+      1. SDK Initialization
+      ---------------------
+      - Initializes the Braze Web SDK
+      - Opens a new session
+      - Enables automatic rendering of In-App Messages
+      - Enables HTML In-App Messages for this sandbox
+    */
     function startBraze() {
       if (brazeInitialized) {
         console.log("Braze already initialized");
@@ -81,12 +108,17 @@
 
       braze.initialize("88884959-92fe-4bd7-ab6b-6660b1c9e859", {
         baseUrl: "sondheim.braze.com",
-        enableLogging: true,
-        allowUserSuppliedJavascript: true
+        enableLogging: true,                 // Enables console logs for debugging
+        allowUserSuppliedJavascript: true    // Required for HTML In-App Messages
       });
 
+      // Automatically display any In-App Messages received
       braze.automaticallyShowInAppMessages();
+
+      // Open a Braze session (should be called after initialize)
       braze.openSession();
+
+      // Enable verbose logging after initialization
       braze.toggleLogging();
 
       brazeInitialized = true;
@@ -95,32 +127,54 @@
       alert("Braze initialized successfully");
     }
 
-    // 2. Identify User via changeUser
+    /*
+      2. User Identification
+      ----------------------
+      - Demonstrates use of changeUser()
+      - Assigns a unique external user ID
+      - Sets basic user attributes
+      - Flushes data immediately to Braze
+    */
     function loginUser() {
       if (!brazeInitialized) {
         alert("Initialize Braze first");
         return;
       }
 
+      // Generate a unique test user ID
       const userId = "SEL_TEST_" + Date.now();
 
+      // Associate the session with a known user
       braze.changeUser(userId);
+
+      // Set sample user attributes
       braze.getUser().setFirstName("BrazeSEL");
       braze.getUser().setEmail(userId + "@example.com");
+
+      // Immediately send data to Braze for verification
       braze.requestImmediateDataFlush();
 
       console.log("User identified as:", userId);
       alert("User logged in:\n" + userId);
     }
 
-    // 3. Trigger In-App Message
+    /*
+      3. Engagement Test
+      ------------------
+      - Logs a custom event
+      - Used to trigger an In-App Message campaign
+      - The message will appear on this webpage
+    */
     function triggerEvent() {
       if (!brazeInitialized) {
         alert("Initialize Braze first");
         return;
       }
 
+      // Log a custom event used as a campaign trigger
       braze.logCustomEvent("web_sdk_test_event");
+
+      // Immediately flush the event to Braze
       braze.requestImmediateDataFlush();
 
       console.log("Custom event logged: web_sdk_test_event");
