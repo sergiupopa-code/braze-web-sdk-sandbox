@@ -1,39 +1,64 @@
-<script type="text/javascript">
-    +function(a,p,P,b,y){a.braze={};a.brazeQueue=[];for(var s="BrazeSdkMetadata DeviceProperties Card Card.prototype.dismissCard Card.prototype.removeAllSubscriptions Card.prototype.removeSubscription Card.prototype.subscribeToClickedEvent Card.prototype.subscribeToDismissedEvent Card.fromContentCardsJson ImageOnly CaptionedImage ClassicCard ControlCard ContentCards ContentCards.prototype.getUnviewedCardCount ControlMessage InAppMessage InAppMessage.SlideFrom InAppMessage.ClickAction InAppMessage.DismissType InAppMessage.OpenTarget InAppMessage.ImageStyle InAppMessage.Orientation InAppMessage.TextAlignment InAppMessage.CropType InAppMessage.prototype.closeMessage InAppMessage.prototype.removeAllSubscriptions InAppMessage.prototype.removeSubscription InAppMessage.prototype.subscribeToClickedEvent InAppMessage.prototype.subscribeToDismissedEvent InAppMessage.fromJson FullScreenMessage ModalMessage HtmlMessage SlideUpMessage User User.Genders User.NotificationSubscriptionTypes User.prototype.addAlias User.prototype.addToCustomAttributeArray User.prototype.addToSubscriptionGroup User.prototype.getUserId User.prototype.getUserId User.prototype.incrementCustomUserAttribute User.prototype.removeFromCustomAttributeArray User.prototype.removeFromSubscriptionGroup User.prototype.setCountry User.prototype.setCustomLocationAttribute User.prototype.setCustomUserAttribute User.prototype.setDateOfBirth User.prototype.setEmail User.prototype.setEmailNotificationSubscriptionType User.prototype.setFirstName User.prototype.setGender User.prototype.setHomeCity User.prototype.setLanguage User.prototype.setLastKnownLocation User.prototype.setLastName User.prototype.setPhoneNumber User.prototype.setPushNotificationSubscriptionType User.prototype.setLineId InAppMessageButton InAppMessageButton.prototype.removeAllSubscriptions InAppMessageButton.prototype.removeSubscription InAppMessageButton.prototype.subscribeToClickedEvent FeatureFlag FeatureFlag.prototype.getStringProperty FeatureFlag.prototype.getNumberProperty FeatureFlag.prototype.getBooleanProperty FeatureFlag.prototype.getImageProperty FeatureFlag.prototype.getJsonProperty FeatureFlag.prototype.getTimestampProperty Banner Banner.prototype.getStringProperty Banner.prototype.getNumberProperty Banner.prototype.getBooleanProperty Banner.prototype.getImageProperty Banner.prototype.getJsonProperty Banner.prototype.getTimestampProperty automaticallyShowInAppMessages hideContentCards showContentCards showInAppMessage deferInAppMessage toggleContentCards changeUser destroy getDeviceId getDeviceId initialize isPushBlocked isPushPermissionGranted isPushSupported logCardDismissal logContentCardImpressions logContentCardClick logBannerImpressions logBannerClick logCustomEvent logInAppMessageButtonClick logInAppMessageClick logInAppMessageHtmlClick logInAppMessageImpression logPurchase openSession requestPushPermission removeAllSubscriptions removeSubscription requestContentCardsRefresh refreshFeatureFlags requestImmediateDataFlush enableSDK isDisabled setLogger setSdkAuthenticationSignature addSdkMetadata disableSDK subscribeToContentCardsUpdates subscribeToInAppMessage subscribeToSdkAuthenticationFailures toggleLogging unregisterPush wipeData handleBrazeAction subscribeToFeatureFlagsUpdates getAllFeatureFlags logFeatureFlagImpression requestBannersRefresh insertBanner getAllBanners subscribeToBannersUpdates isInitialized".split(" "),i=0;i<s.length;i++){for(var m=s[i],k=a.braze,l=m.split("."),j=0;j<l.length-1;j++)k=k[l[j]];k[l[j]]=(new Function("return function "+m.replace(/\./g,"_")+"(){window.brazeQueue.push(arguments); return true}"))()}window.braze.getDeferredInAppMessage=function(){return new window.braze.InAppMessage};window.braze.getCachedContentCards=function(){return new window.braze.ContentCards};window.braze.getUser=function(){return new window.braze.User};window.braze.getFeatureFlag=function(){return new window.braze.FeatureFlag};window.braze.getBanner=function(){return new window.braze.Banner};window.braze.newBannerFromJson=function(){return new window.braze.Banner};(y=p.createElement(P)).type='text/javascript';
-    y.src='https://js.appboycdn.com/web-sdk/6.5/braze.min.js';
-    y.async=1;(b=p.getElementsByTagName(P)[0]).parentNode.insertBefore(y,b)
-    }(window,document,'script');
-  </script>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Braze Web SDK Sandbox</title>
+    <style>
+        body { font-family: sans-serif; padding: 40px; text-align: center; background-color: #f4f7f9; }
+        .container { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); display: inline-block; }
+        button { display: block; width: 200px; margin: 10px auto; padding: 10px; cursor: pointer; background-color: #0073eb; color: white; border: none; border-radius: 4px; font-weight: bold; }
+        button:hover { background-color: #005bbd; }
+    </style>
 
-  <script>
-    // 1. SDK Initialization
-    function startBraze() {
-      braze.initialize("88884959-92fe-4bd7-ab6b-6660b1c9e859", {
-        baseUrl: "sondheim.braze.com",
-        enableLogging: true
-      });
-      braze.automaticallyShowInAppMessages();
-      braze.openSession();
-      console.log("Braze session started");
-    }
+    <script type="text/javascript">
+        +function(a,p,P,b,y){a.braze={};a.brazeQueue=[];for(var s="BrazeSdkMetadata DeviceProperties Card Card.prototype.dismissCard Card.prototype.removeAllSubscriptions Card.prototype.removeSubscription Card.prototype.subscribeToClickedEvent Card.prototype.subscribeToDismissedEvent Card.fromContentCardsJson ImageOnly CaptionedImage ClassicCard ControlCard ContentCards ContentCards.prototype.getUnviewedCardCount ControlMessage InAppMessage InAppMessage.SlideFrom InAppMessage.ClickAction InAppMessage.DismissType InAppMessage.OpenTarget InAppMessage.ImageStyle InAppMessage.Orientation InAppMessage.TextAlignment InAppMessage.CropType InAppMessage.prototype.closeMessage InAppMessage.prototype.removeAllSubscriptions InAppMessage.prototype.removeSubscription InAppMessage.prototype.subscribeToClickedEvent InAppMessage.prototype.subscribeToDismissedEvent InAppMessage.fromJson FullScreenMessage ModalMessage HtmlMessage SlideUpMessage User User.Genders User.NotificationSubscriptionTypes User.prototype.addAlias User.prototype.addToCustomAttributeArray User.prototype.addToSubscriptionGroup User.prototype.getUserId User.prototype.getUserId User.prototype.incrementCustomUserAttribute User.prototype.removeFromCustomAttributeArray User.prototype.removeFromSubscriptionGroup User.prototype.setCountry User.prototype.setCustomLocationAttribute User.prototype.setCustomUserAttribute User.prototype.setDateOfBirth User.prototype.setEmail User.prototype.setEmailNotificationSubscriptionType User.prototype.setFirstName User.prototype.setGender User.prototype.setHomeCity User.prototype.setLanguage User.prototype.setLastKnownLocation User.prototype.setLastName User.prototype.setPhoneNumber User.prototype.setPushNotificationSubscriptionType User.prototype.setLineId InAppMessageButton InAppMessageButton.prototype.removeAllSubscriptions InAppMessageButton.prototype.removeSubscription InAppMessageButton.prototype.subscribeToClickedEvent FeatureFlag FeatureFlag.prototype.getStringProperty FeatureFlag.prototype.getNumberProperty FeatureFlag.prototype.getBooleanProperty FeatureFlag.prototype.getImageProperty FeatureFlag.prototype.getJsonProperty FeatureFlag.prototype.getTimestampProperty Banner Banner.prototype.getStringProperty Banner.prototype.getNumberProperty Banner.prototype.getBooleanProperty Banner.prototype.getImageProperty Banner.prototype.getJsonProperty Banner.prototype.getTimestampProperty automaticallyShowInAppMessages hideContentCards showContentCards showInAppMessage deferInAppMessage toggleContentCards changeUser destroy getDeviceId getDeviceId initialize isPushBlocked isPushPermissionGranted isPushSupported logCardDismissal logContentCardImpressions logContentCardClick logBannerImpressions logBannerClick logCustomEvent logInAppMessageButtonClick logInAppMessageClick logInAppMessageHtmlClick logInAppMessageImpression logPurchase openSession requestPushPermission removeAllSubscriptions removeSubscription requestContentCardsRefresh refreshFeatureFlags requestImmediateDataFlush enableSDK isDisabled setLogger setSdkAuthenticationSignature addSdkMetadata disableSDK subscribeToContentCardsUpdates subscribeToInAppMessage subscribeToSdkAuthenticationFailures toggleLogging unregisterPush wipeData handleBrazeAction subscribeToFeatureFlagsUpdates getAllFeatureFlags logFeatureFlagImpression requestBannersRefresh insertBanner getAllBanners subscribeToBannersUpdates isInitialized".split(" "),i=0;i<s.length;i++){for(var m=s[i],k=a.braze,l=m.split("."),j=0;j<l.length-1;j++)k=k[l[j]];k[l[j]]=(new Function("return function "+m.replace(/\./g,"_")+"(){window.brazeQueue.push(arguments); return true}"))()}window.braze.getDeferredInAppMessage=function(){return new window.braze.InAppMessage};window.braze.getCachedContentCards=function(){return new window.braze.ContentCards};window.braze.getUser=function(){return new window.braze.User};window.braze.getFeatureFlag=function(){return new window.braze.FeatureFlag};window.braze.getBanner=function(){return new window.braze.Banner};window.braze.newBannerFromJson=function(){return new window.braze.Banner};(y=p.createElement(P)).type='text/javascript';
+        y.src='https://js.appboycdn.com/web-sdk/6.5/braze.min.js';
+        y.async=1;(b=p.getElementsByTagName(P)[0]).parentNode.insertBefore(y,b)
+        }(window,document,'script');
+    </script>
+</head>
+<body>
 
-    // 2. User Identification
-    function loginUser() {
-      const userId = "web_sdk_user_" + Date.now();
-      braze.changeUser(userId);
-      braze.getUser().setFirstName("WebSDK");
-      braze.getUser().setEmail(userId + "@example.com");
-      braze.requestImmediateDataFlush();
-      console.log("Changed user to:", userId);
-    }
+    <div class="container">
+        <h1>Braze SEL Sandbox</h1>
+        <p>Current Status: Check Console for Logs</p>
+        
+        <button onclick="startBraze()">1. Start Braze Session</button>
+        <button onclick="loginUser()">2. Login & Identify User</button>
+        <button onclick="triggerEvent()">3. Trigger Engagement (IAM)</button>
+    </div>
 
-    // 3. Engagement Test
-    function triggerEvent() {
-      braze.logCustomEvent("web_sdk_test_event");
-      braze.requestImmediateDataFlush();
-      console.log("Custom event 'web_sdk_test_event' logged!");
-      alert("Event Logged! Check the dashboard for your In-App Message.");
-    }
-  </script>
+    <script>
+        // 1. SDK Initialization
+        function startBraze() {
+            braze.initialize("88884959-92fe-4bd7-ab6b-6660b1c9e859", {
+                baseUrl: "sondheim.braze.com",
+                enableLogging: true
+            });
+            braze.automaticallyShowInAppMessages();
+            braze.openSession();
+            console.log("Braze: Session Started");
+            alert("Braze Initialized!");
+        }
+        // 2. User Identification
+        function loginUser() {
+            const userId = "SEL_TEST_" + Date.now();
+            braze.changeUser(userId);
+            braze.getUser().setFirstName("BrazeSEL");
+            braze.getUser().setEmail(userId + "@example.com");
+            braze.requestImmediateDataFlush();
+            console.log("Braze: User identified as " + userId);
+            alert("User Identified: " + userId);
+        }
+        // 3. Engagement Test
+        function triggerEvent() {
+            braze.logCustomEvent("web_sdk_test_event");
+            braze.requestImmediateDataFlush();
+            console.log("Braze: Event 'web_sdk_test_event' logged");
+            alert("Event Logged! Look for your IAM now.");
+        }
+    </script>
+
 </body>
 </html>
