@@ -36,21 +36,23 @@
 
     // STEP 1: INITIALIZATION
     function startBraze() {
-      if (isInitialized) return;
+  if (isInitialized) return;
 
-      braze.initialize("88884959-92fe-4bd7-ab6b-6660b1c9e859", {
-        baseUrl: "sondheim.braze.com",
-        enableLogging: true,                // Essential for SEL debugging
-        allowUserSuppliedJavascript: true,  // Fixes the HTML IAM error you hit
-        manageServiceWorkerExternally: true // Tells Braze to look for our service-worker.js file
-      });
+  braze.initialize("88884959-92fe-4bd7-ab6b-6660b1c9e859", {
+    baseUrl: "sondheim.braze.com",
+    enableLogging: true,
+    allowUserSuppliedJavascript: true,
+    manageServiceWorkerExternally: false, 
+    // ADD THIS LINE BELOW: Use the exact name of your GitHub repo
+    serviceWorkerLocation: "/braze-web-sdk-sandbox/service-worker.js" 
+  });
 
-      braze.automaticallyShowInAppMessages();
-      braze.openSession();
-      isInitialized = true;
-      console.log("Braze: Initialized with Service Worker support");
-      alert("SDK Initialized!");
-    }
+  braze.automaticallyShowInAppMessages();
+  braze.openSession();
+  isInitialized = true;
+  console.log("Braze: Initialized with Custom SW Location");
+  alert("SDK Initialized!");
+}
 
     // STEP 2: USER IDENTIFICATION
     function loginUser() {
