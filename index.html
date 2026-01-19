@@ -42,18 +42,17 @@
     baseUrl: "sondheim.braze.com",
     enableLogging: true,
     allowUserSuppliedJavascript: true,
-    manageServiceWorkerExternally: false, 
-    // ADD THIS LINE BELOW: Use the exact name of your GitHub repo
+    manageServiceWorkerExternally: false, // Let Braze handle the registration
+    
+    // THIS IS THE CRITICAL LINE FOR GITHUB PAGES:
     serviceWorkerLocation: "/braze-web-sdk-sandbox/service-worker.js" 
   });
 
   braze.automaticallyShowInAppMessages();
   braze.openSession();
   isInitialized = true;
-  console.log("Braze: Initialized with Custom SW Location");
-  alert("SDK Initialized!");
+  console.log("Braze: Initialized with explicit SW location");
 }
-
     // STEP 2: USER IDENTIFICATION
     function loginUser() {
       if (!isInitialized) return alert("Run Step 1 first!");
