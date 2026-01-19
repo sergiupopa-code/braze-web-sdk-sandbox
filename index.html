@@ -82,6 +82,7 @@
     <button onclick="startBraze()">1. Start Braze Session</button>
     <button onclick="loginUser()">2. Login & Identify User</button>
     <button onclick="triggerEvent()">3. Trigger Engagement (IAM)</button>
+    <button onclick="enablePush()">4. Enable Web Push</button>
   </div>
 
   <script>
@@ -101,31 +102,21 @@
       - Enables HTML In-App Messages for this sandbox
     */
     function startBraze() {
-      if (brazeInitialized) {
-        console.log("Braze already initialized");
-        return;
-      }
+    if (brazeInitialized) return;
 
-      braze.initialize("88884959-92fe-4bd7-ab6b-6660b1c9e859", {
-        baseUrl: "sondheim.braze.com",
-        enableLogging: true,                 // Enables console logs for debugging
-        allowUserSuppliedJavascript: true    // Required for HTML In-App Messages
-      });
+    braze.initialize("88884959-92fe-4bd7-ab6b-6660b1c9e859", {
+    baseUrl: "sondheim.braze.com",
+    enableLogging: true,
+    allowUserSuppliedJavascript: true,
+    manageServiceWorkerExternally: true // Tells Braze you created your own service-worker.js
+    });
 
-      // Automatically display any In-App Messages received
-      braze.automaticallyShowInAppMessages();
-
-      // Open a Braze session (should be called after initialize)
-      braze.openSession();
-
-      // Enable verbose logging after initialization
-      braze.toggleLogging();
-
-      brazeInitialized = true;
-
-      console.log("Braze initialized and session started");
-      alert("Braze initialized successfully");
-    }
+    braze.automaticallyShowInAppMessages();
+    braze.openSession();
+    braze.toggleLogging();
+    brazeInitialized = true;
+    alert("Braze Initialized with Push support!");
+  }
 
     /*
       2. User Identification
@@ -180,6 +171,31 @@
       console.log("Custom event logged: web_sdk_test_event");
       alert("Event logged — IAM should appear now");
     }
+
+
+    function enablePush() {
+    if (!brazeInitialized) {
+      alert("Initialize Braze first");
+      return;
+    }
+  
+    // Check if the browser even supports push before asking
+    if (braze.isPushSupported()) {
+      braze.requestPushPermission(
+        (permission) => {
+          console.log("Push permission status:", permission);
+          if (permission === "granted") {
+            alert("Push Permission Granted!");
+          }
+        },
+        (error) => {
+          console.error("Push error:", error);
+        }
+      );
+    } else {
+      alert("Web Push is not supported in this browser.");
+    }
+  }
   </script>
 
 </body>
