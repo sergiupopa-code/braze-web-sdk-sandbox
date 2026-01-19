@@ -35,7 +35,7 @@
     }
   </style>
 
-  <!-- Braze SDK -->
+  <!-- Load Braze SDK -->
   <script src="https://js.appboycdn.com/web-sdk/6.5/braze.min.js"></script>
 </head>
 
@@ -50,78 +50,19 @@
   <button onclick="enablePush()">4. Enable Web Push</button>
 </div>
 
+<!-- ✅ ALL JAVASCRIPT GOES LAST -->
 <script>
   let brazeInitialized = false;
 
-  /* ----------------------------------------------------
-     1. Initialize Braze + register service worker
-     ---------------------------------------------------- */
-  async function startBraze() {
+  /* --------------------------------------------------
+     1. Initialize Braze + Service Worker
+     -------------------------------------------------- */
+  window.startBraze = async function () {
     if (brazeInitialized) return;
 
-    // ✅ REGISTER SERVICE WORKER FIRST
+    // Register service worker FIRST
     if ("serviceWorker" in navigator) {
       try {
-        const registration = await navigator.serviceWorker.register("/service-worker.js");
-        console.log("Service Worker registered:", registration);
-      } catch (err) {
-        console.error("Service Worker registration failed:", err);
-        alert("Service Worker registration failed. Push will not work.");
-        return;
-      }
-    } else {
-      alert("Service workers not supported in this browser");
-      return;
-    }
-
-    // ✅ INITIALIZE BRAZE
-    braze.initialize("88884959-92fe-4bd7-ab6b-6660b1c9e859", {
-      baseUrl: "sondheim.braze.com",
-      enableLogging: true,
-      allowUserSuppliedJavascript: true,
-      manageServiceWorkerExternally: true
-    });
-
-    braze.automaticallyShowInAppMessages();
-    braze.openSession();
-    brazeInitialized = true;
-
-    alert("Braze initialized and service worker registered");
-  }
-
-  /* ----------------------------------------------------
-     2. Identify User
-     ---------------------------------------------------- */
-  function loginUser() {
-    if (!brazeInitialized) {
-      alert("Initialize Braze first");
-      return;
-    }
-
-    const userId = "SEL_TEST_" + Date.now();
-    braze.changeUser(userId);
-    braze.getUser().setEmail(userId + "@example.com");
-    braze.requestImmediateDataFlush();
-
-    alert("User identified:\n" + userId);
-  }
-
-  /* ----------------------------------------------------
-     3. Trigger IAM
-     ---------------------------------------------------- */
-  function triggerEvent() {
-    if (!brazeInitialized) return;
-
-    braze.logCustomEvent("web_sdk_test_event");
-    braze.requestImmediateDataFlush();
-
-    alert("Event logged — IAM should appear");
-  }
-
-  /* ----------------------------------------------------
-     4. Enable Web Push (CORRECT FLOW)
-     ---------------------------------------------------- */
-  function enablePush() {
-    if (!brazeInitialized) return;
-
-    if (!braze.isPushSupported()) {
+        const reg = await navigator.serviceWorker.register("/service-worker.js");
+        console.log("Service Worker registered:", reg);
+      } catch
