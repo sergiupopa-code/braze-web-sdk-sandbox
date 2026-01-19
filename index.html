@@ -2,67 +2,103 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Braze Web SDK SEL Sandbox</title>
+  <title>Braze SEL Web SDK Sandbox</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
+  
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      background-color: #f4f7f9;
-      padding: 40px;
-      text-align: center;
-    }
-    .container {
-      background: white;
-      padding: 30px;
-      border-radius: 8px;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-      display: inline-block;
-    }
-    button {
-      width: 240px;
-      margin: 10px;
-      padding: 12px;
-      background: #0073eb;
-      color: white;
-      border: none;
-      border-radius: 4px;
-      font-weight: bold;
-      cursor: pointer;
-    }
-    button:hover {
-      background: #005bbd;
-    }
+    body { font-family: 'Segoe UI', sans-serif; background: #f0f2f5; padding: 40px; text-align: center; }
+    .card { background: white; padding: 30px; border-radius: 12px; shadow: 0 4px 15px rgba(0,0,0,0.1); display: inline-block; min-width: 350px; }
+    button { display: block; width: 100%; margin: 12px 0; padding: 12px; cursor: pointer; background: #0073eb; color: white; border: none; border-radius: 6px; font-weight: 600; }
+    button:hover { background: #005bbd; }
+    .log-hint { font-size: 12px; color: #666; margin-top: 10px; }
   </style>
 
-  <!-- Load Braze SDK -->
-  <script src="https://js.appboycdn.com/web-sdk/6.5/braze.min.js"></script>
+  <script type="text/javascript">
+    +function(a,p,P,b,y){a.braze={};a.brazeQueue=[];for(var s="initialize openSession changeUser logCustomEvent automaticallyShowInAppMessages getUser requestImmediateDataFlush toggleLogging isPushSupported requestPushPermission isPushPermissionGranted".split(" "),i=0;i<s.length;i++){a.braze[s[i]]=function(){a.brazeQueue.push(arguments)}}
+    (y=p.createElement(P)).type='text/javascript';y.src='https://js.appboycdn.com/web-sdk/6.5/braze.min.js';y.async=1;(b=p.getElementsByTagName(P)[0]).parentNode.insertBefore(y,b)
+    }(window,document,'script');
+  </script>
 </head>
-
 <body>
 
-<div class="container">
-  <h1>Braze SEL Sandbox</h1>
+  <div class="card">
+    <h2>Braze SEL Sandbox</h2>
+    <p class="log-hint">Check Console (F12) for real-time logs</p>
+    
+    <button onclick="startBraze()">1. Start Braze Session</button>
+    <button onclick="loginUser()">2. Login & Identify User</button>
+    <button onclick="triggerEvent()">3. Trigger Engagement (IAM)</button>
+    <button onclick="enablePush()">4. Enable Web Push</button>
+  </div>
 
-  <button onclick="startBraze()">1. Initialize Braze</button>
-  <button onclick="loginUser()">2. Identify User</button>
-  <button onclick="triggerEvent()">3. Trigger IAM</button>
-  <button onclick="enablePush()">4. Enable Web Push</button>
-</div>
+  <script>
+    let isInitialized = false;
 
-<!-- ✅ ALL JAVASCRIPT GOES LAST -->
-<script>
-  let brazeInitialized = false;
+    // STEP 1: INITIALIZATION
+    function startBraze() {
+      if (isInitialized) return;
 
-  /* --------------------------------------------------
-     1. Initialize Braze + Service Worker
-     -------------------------------------------------- */
-  window.startBraze = async function () {
-    if (brazeInitialized) return;
+      braze.initialize("88884959-92fe-4bd7-ab6b-6660b1c9e859", {
+        baseUrl: "sondheim.braze.com",
+        enableLogging: true,                // Essential for SEL debugging
+        allowUserSuppliedJavascript: true,  // Fixes the HTML IAM error you hit
+        manageServiceWorkerExternally: true // Tells Braze to look for our service-worker.js file
+      });
 
-    // Register service worker FIRST
-    if ("serviceWorker" in navigator) {
-      try {
-        const reg = await navigator.serviceWorker.register("/service-worker.js");
-        console.log("Service Worker registered:", reg);
-      } catch
+      braze.automaticallyShowInAppMessages();
+      braze.openSession();
+      isInitialized = true;
+      console.log("Braze: Initialized with Service Worker support");
+      alert("SDK Initialized!");
+    }
+
+    // STEP 2: USER IDENTIFICATION
+    function loginUser() {
+      if (!isInitialized) return alert("Run Step 1 first!");
+      
+      const externalId = "SEL_TEST_" + Date.now();
+      braze.changeUser(externalId); // Critical for profile persistence
+      braze.getUser().setFirstName("BrazeSEL");
+      braze.requestImmediateDataFlush(); // Pushes data to dashboard instantly
+      
+      console.log("Braze: User identified as " + externalId);
+      alert("User Logged In: " + externalId);
+    }
+
+    // STEP 3: CUSTOM EVENT (IAM TRIGGER)
+    function triggerEvent() {
+      if (!isInitialized) return alert("Run Step 1 first!");
+      
+      braze.logCustomEvent("web_sdk_test_event"); // Matches your Dashboard trigger
+      braze.requestImmediateDataFlush();
+      console.log("Braze: Custom event logged. Message should appear if campaign is active.");
+    }
+
+    // STEP 4: WEB PUSH REGISTRATION
+    function enablePush() {
+      if (!isInitialized) return alert("Run Step 1 first!");
+
+      if (braze.isPushSupported()) {
+        braze.requestPushPermission(
+          (permission) => {
+            console.log("Browser permission: " + permission);
+            
+            // Give the browser a moment to register the Service Worker
+            setTimeout(() => {
+              if (braze.isPushPermissionGranted()) {
+                alert("Push Success! Service Worker is registered.");
+                braze.requestImmediateDataFlush();
+              } else {
+                alert("Permission granted, but registration failed. Check if service-worker.js is in your GitHub root.");
+              }
+            }, 2000);
+          },
+          (err) => { console.error("Push Error:", err); }
+        );
+      } else {
+        alert("Web Push is not supported in this browser.");
+      }
+    }
+  </script>
+</body>
+</html>
