@@ -19,39 +19,56 @@
     The goal is clarity for demos and debugging, not production UI.
   -->
   <style>
-    body {
-      font-family: 'Segoe UI', sans-serif;
-      background: #f0f2f5;
-      padding: 40px;
-      text-align: center;
-    }
-    .card {
-      background: white;
-      padding: 30px;
-      border-radius: 12px;
-      shadow: 0 4px 15px rgba(0,0,0,0.1);
-      display: inline-block;
-      min-width: 350px;
-    }
-    button {
-      display: block;
-      width: 100%;
-      margin: 12px 0;
-      padding: 12px;
-      cursor: pointer;
-      background: #0073eb;
-      color: white;
-      border: none;
-      border-radius: 6px;
-      font-weight: 600;
-    }
-    button:hover { background: #005bbd; }
-    .log-hint {
-      font-size: 12px;
-      color: #666;
-      margin-top: 10px;
-    }
-  </style>
+  body {
+    font-family: Inter, 'Segoe UI', sans-serif;
+    background: linear-gradient(135deg, #f8fafc 0%, #eef2f7 100%);
+    padding: 60px;
+    text-align: center;
+    color: #1f2933;
+  }
+
+  .card {
+    background: white;
+    padding: 36px;
+    border-radius: 16px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+    display: inline-block;
+    min-width: 380px;
+  }
+
+  h2 {
+    margin-bottom: 6px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+  }
+
+  .log-hint {
+    font-size: 13px;
+    color: #6b7280;
+    margin-bottom: 20px;
+  }
+
+  button {
+    display: block;
+    width: 100%;
+    margin: 14px 0;
+    padding: 14px;
+    cursor: pointer;
+    background: #ff4f4f; 
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-weight: 600;
+    font-size: 14px;
+    transition: transform 0.1s ease, box-shadow 0.1s ease;
+  }
+
+  button:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 8px 18px rgba(255, 79, 79, 0.35);
+  }
+</style>
+
 
   <!--
     Braze Web SDK Asynchronous Loader
