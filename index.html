@@ -1,30 +1,152 @@
-I understand how frustrating this is, especially when you can see the data in the console but the notification refuses to appear. Let's fix the button UI immediately and then solve the "missing push" mystery once and for all.
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Braze SEL Advanced Sandbox</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-1. The Fixed Code (With Green Button Logic)
-The reason your 4th button isn't turning green is that the UI update code was missing from the enablePush function. Replace your script's enablePush function with this exact block:
+  <style>
+    :root {
+      --braze-purple: #6f3cff;
+      --braze-orange: #ff8b5e;
+    }
+    body {
+      margin: 0; min-height: 100vh; font-family: "Inter", sans-serif;
+      background: linear-gradient(135deg, var(--braze-purple) 0%, #b84cff 40%, var(--braze-orange) 100%);
+      display: flex; align-items: center; justify-content: center; color: #1f2933;
+    }
+    .card {
+      background: rgba(255, 255, 255, 0.95); padding: 40px; border-radius: 24px;
+      width: 420px; box-shadow: 0 25px 50px rgba(0, 0, 0, 0.2); text-align: center;
+      backdrop-filter: blur(10px);
+    }
+    h2 { margin: 0 0 10px; font-size: 26px; background: linear-gradient(to right, #6f3cff, #ff8b5e); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .status-badge { display: inline-block; padding: 4px 12px; border-radius: 20px; font-size: 11px; font-weight: 700; background: #eee; margin-bottom: 20px; text-transform: uppercase; }
+    
+    button {
+      width: 100%; padding: 16px; margin: 8px 0; border: none; border-radius: 12px;
+      font-size: 14px; font-weight: 600; cursor: pointer; color: white;
+      background: #2d3748; transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    button.active { background: linear-gradient(135deg, #7b4dff, #ff8b5e); transform: scale(1.02); box-shadow: 0 10px 20px rgba(123, 77, 255, 0.3); }
+    button.completed { background: #10b981 !important; }
+    button:disabled { opacity: 0.6; cursor: not-allowed; }
 
-JavaScript
+    #console-feed {
+      margin-top: 25px; background: #1a202c; color: #a0aec0;
+      padding: 15px; border-radius: 10px; font-family: "Courier New", monospace;
+      font-size: 11px; text-align: left; height: 100px; overflow-y: auto;
+    }
+    .log-entry { margin-bottom: 5px; border-bottom: 1px solid #2d3748; padding-bottom: 2px; }
+    .log-entry.success { color: #4fd1c5; }
+  </style>
 
-function enablePush() {
-  uiLog("Requesting push permission...");
-  braze.requestPushPermission(() => {
-    // This callback fires after the user interacts with the browser prompt
-    setTimeout(() => {
-      if (braze.isPushPermissionGranted()) {
-        // SUCCESS UI UPDATES
-        const btn4 = document.getElementById('btn-4');
-        btn4.classList.add('completed');
-        btn4.innerHTML = '4. Push Enabled <span>✅</span>';
-        
-        // LOGGING & TRIGGERING
-        braze.logCustomEvent("web_sdk_test_event"); 
-        braze.requestImmediateDataFlush();
-        uiLog("Web Push Registered & Trigger Sent!", true);
-      } else {
-        uiLog("Push permission was not granted.");
-      }
-    }, 2000);
-  }, (err) => {
-    uiLog("Push Error: " + err);
-  });
-}
+  <script type="text/javascript">
+    +function(a,p,P,b,y){a.braze={};a.brazeQueue=[];for(var s="initialize openSession changeUser logCustomEvent automaticallyShowInAppMessages getUser requestImmediateDataFlush toggleLogging isPushSupported requestPushPermission isPushPermissionGranted".split(" "),i=0;i<s.length;i++){a.braze[s[i]]=function(){a.brazeQueue.push(arguments)}}(y=p.createElement(P)).type='text/javascript';y.src='https://js.appboycdn.com/web-sdk/6.5/braze.min.js';y.async=1;(b=p.getElementsByTagName(P)[0]).parentNode.insertBefore(y,b)}(window,document,'script');
+  </script>
+</head>
+<body>
+
+  <div class="card">
+    <div id="badge" class="status-badge">SDK Offline</div>
+    <h2>Braze SEL Sandbox</h2>
+    
+    <button id="btn-1" onclick="startBraze()" class="active">1. Initialize SDK <span>➔</span></button>
+    <button id="btn-2" onclick="loginUser()">2. Identify User <span>➔</span></button>
+    <button id="btn-3" onclick="triggerEvent()">3. Trigger IAM <span>➔</span></button>
+    <button id="btn-4" onclick="enablePush()">4. Enable Web Push <span>➔</span></button>
+
+    <div id="console-feed">
+      <div class="log-entry">> Awaiting initialization...</div>
+    </div>
+  </div>
+
+  <script>
+    let isInitialized = false;
+
+    function uiLog(msg, isSuccess = false) {
+      const feed = document.getElementById('console-feed');
+      const entry = document.createElement('div');
+      entry.className = isSuccess ? 'log-entry success' : 'log-entry';
+      entry.innerHTML = `> ${msg}`;
+      feed.prepend(entry);
+    }
+
+    function startBraze() {
+      if (isInitialized) return;
+
+      braze.initialize("88884959-92fe-4bd7-ab6b-6660b1c9e859", {
+        baseUrl: "sondheim.braze.com",
+        enableLogging: true,
+        allowUserSuppliedJavascript: true,
+        manageServiceWorkerExternally: false,
+        // CRITICAL: Path must match your GitHub repo folder name
+        serviceWorkerLocation: "/braze-web-sdk-sandbox/service-worker.js"
+      });
+
+      braze.automaticallyShowInAppMessages();
+      braze.openSession();
+
+      isInitialized = true;
+      document.getElementById('btn-1').classList.add('completed');
+      document.getElementById('btn-1').innerHTML = '1. SDK Active <span>✅</span>';
+      document.getElementById('btn-2').classList.add('active');
+      document.getElementById('badge').innerHTML = "SDK Online";
+      document.getElementById('badge').style.background = "#d1fae5";
+      uiLog("Braze Initialized", true);
+    }
+
+    function loginUser() {
+      if (!isInitialized) return uiLog("Error: Initialize first");
+      const extId = "SEL_USER_" + Math.floor(Math.random()*1000);
+      braze.changeUser(extId);
+      braze.getUser().setFirstName("SEL_Expert");
+      braze.requestImmediateDataFlush();
+      
+      document.getElementById('btn-2').classList.add('completed');
+      document.getElementById('btn-2').innerHTML = `2. Identified: ${extId} <span>✅</span>`;
+      document.getElementById('btn-3').classList.add('active');
+      uiLog(`User changed to: ${extId}`, true);
+    }
+
+    function triggerEvent() {
+      if (!isInitialized) return;
+      braze.logCustomEvent("web_sdk_test_event");
+      braze.requestImmediateDataFlush();
+      
+      document.getElementById('btn-3').classList.add('completed');
+      document.getElementById('btn-3').innerHTML = '3. Triggered IAM <span>✅</span>';
+      document.getElementById('btn-4').classList.add('active');
+      uiLog("Event: web_sdk_test_event logged", true);
+    }
+
+    function enablePush() {
+      if (!isInitialized) return uiLog("Error: Initialize first");
+      uiLog("Requesting push permission...");
+      
+      braze.requestPushPermission(() => {
+        // Success Callback
+        setTimeout(() => {
+          if (braze.isPushPermissionGranted()) {
+            // Update UI to Green
+            const btn4 = document.getElementById('btn-4');
+            btn4.classList.add('completed');
+            btn4.innerHTML = '4. Push Enabled <span>✅</span>';
+            
+            // Log Event to Trigger Campaign
+            braze.logCustomEvent("web_sdk_test_event"); 
+            braze.requestImmediateDataFlush();
+            
+            uiLog("Push Registered & Event Logged!", true);
+          } else {
+            uiLog("Permission granted, but registration pending.");
+          }
+        }, 2000);
+      }, (err) => {
+        uiLog("Push Error: " + err);
+      });
+    }
+  </script>
+</body>
+</html>
