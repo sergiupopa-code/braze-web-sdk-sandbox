@@ -119,21 +119,27 @@
     }
 
     function enablePush() {
-      if (!isInitialized) return;
-      uiLog("Requesting push permission...");
-      
-      braze.requestPushPermission(() => {
-        setTimeout(() => {
-          if (braze.isPushPermissionGranted()) {
-            document.getElementById('btn-4').classList.add('completed');
-            document.getElementById('btn-4').innerHTML = '4. Push Enabled <span>✅</span>';
-            uiLog("Web Push Registered Successfully!", true);
-          } else {
-            uiLog("Error: SW registration failed.");
-          }
-        }, 2000);
-      }, err => uiLog("Push Denied or Error"));
-    }
+  if (!isInitialized) return;
+  uiLog("Requesting push permission...");
+  
+  braze.requestPushPermission(() => {
+    setTimeout(() => {
+      if (braze.isPushPermissionGranted()) {
+        document.getElementById('btn-4').classList.add('completed');
+        document.getElementById('btn-4').innerHTML = '4. Push Enabled <span>✅</span>';
+        uiLog("Web Push Registered Successfully!", true);
+
+        // TRIGGER THE CAMPAIGN HERE
+        braze.logCustomEvent("web_sdk_test_event"); // Match your dashboard trigger
+        braze.requestImmediateDataFlush(); // Force send to Braze instantly
+        uiLog("Push trigger event sent to Braze!");
+
+      } else {
+        uiLog("Error: SW registration failed.");
+      }
+    }, 2000);
+  }, err => uiLog("Push Denied or Error"));
+}
   </script>
 </body>
 </html>
