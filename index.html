@@ -2,137 +2,79 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Braze SEL Web SDK Sandbox</title>
+  <title>Braze SEL Advanced Sandbox</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <!--
-    VISUAL STYLING (Braze-inspired)
-    -------------------------------
-    This styling is intentionally inspired by Braze's modern brand direction:
-    soft gradients, warm accents, elevated cards, and clear call-to-action buttons.
-    No official brand assets are used.
-  -->
   <style>
+    :root {
+      --braze-purple: #6f3cff;
+      --braze-orange: #ff8b5e;
+    }
     body {
-      margin: 0;
-      min-height: 100vh;
-      font-family: "Inter", "Segoe UI", sans-serif;
-      background: linear-gradient(
-        135deg,
-        #6f3cff 0%,
-        #b84cff 40%,
-        #ff8b5e 100%
-      );
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: #1f2933;
+      margin: 0; min-height: 100vh; font-family: "Inter", sans-serif;
+      background: linear-gradient(135deg, var(--braze-purple) 0%, #b84cff 40%, var(--braze-orange) 100%);
+      display: flex; align-items: center; justify-content: center; color: #1f2933;
     }
-
     .card {
-      background: #ffffff;
-      padding: 36px 32px;
-      border-radius: 16px;
-      width: 380px;
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
-      text-align: center;
+      background: rgba(255, 255, 255, 0.95); padding: 40px; border-radius: 24px;
+      width: 420px; box-shadow: 0 25px 50px rgba(0, 0, 0, 0.2); text-align: center;
+      backdrop-filter: blur(10px);
     }
-
-    h2 {
-      margin-top: 0;
-      margin-bottom: 8px;
-      font-size: 22px;
-      font-weight: 700;
-    }
-
-    .subtitle {
-      font-size: 13px;
-      color: #6b7280;
-      margin-bottom: 28px;
-    }
-
+    h2 { margin: 0 0 10px; font-size: 26px; background: linear-gradient(to right, #6f3cff, #ff8b5e); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .status-badge { display: inline-block; padding: 4px 12px; border-radius: 20px; font-size: 11px; font-weight: 700; background: #eee; margin-bottom: 20px; text-transform: uppercase; }
+    
+    /* Interactive Buttons */
     button {
-      width: 100%;
-      padding: 14px;
-      margin: 10px 0;
-      border: none;
-      border-radius: 10px;
-      font-size: 14px;
-      font-weight: 600;
-      cursor: pointer;
-      color: white;
-      background: linear-gradient(
-        135deg,
-        #7b4dff,
-        #ff8b5e
-      );
-      transition: transform 0.15s ease, box-shadow 0.15s ease;
+      width: 100%; padding: 16px; margin: 8px 0; border: none; border-radius: 12px;
+      font-size: 14px; font-weight: 600; cursor: pointer; color: white;
+      background: #2d3748; transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      display: flex; justify-content: space-between; align-items: center;
     }
+    button.active { background: linear-gradient(135deg, #7b4dff, #ff8b5e); transform: scale(1.02); box-shadow: 0 10px 20px rgba(123, 77, 255, 0.3); }
+    button.completed { background: #10b981 !important; }
+    button:disabled { opacity: 0.6; cursor: not-allowed; }
 
-    button:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 8px 18px rgba(0, 0, 0, 0.18);
+    /* Live Log Feed */
+    #console-feed {
+      margin-top: 25px; background: #1a202c; color: #a0aec0;
+      padding: 15px; border-radius: 10px; font-family: "Courier New", monospace;
+      font-size: 11px; text-align: left; height: 100px; overflow-y: auto;
     }
-
-    button:active {
-      transform: translateY(0);
-      box-shadow: none;
-    }
-
-    .log-hint {
-      font-size: 12px;
-      color: #9ca3af;
-      margin-top: 18px;
-    }
+    .log-entry { margin-bottom: 5px; border-bottom: 1px solid #2d3748; padding-bottom: 2px; }
+    .log-entry.success { color: #4fd1c5; }
   </style>
 
-  <!--
-    Braze Web SDK Loader (Async Queue)
-    ---------------------------------
-    This snippet queues Braze API calls until the SDK finishes loading.
-    It allows us to safely call Braze methods before braze.min.js is ready.
-  -->
   <script type="text/javascript">
-    +function(a,p,P,b,y){
-      a.braze={};
-      a.brazeQueue=[];
-      for(
-        var s="initialize openSession changeUser logCustomEvent automaticallyShowInAppMessages getUser requestImmediateDataFlush toggleLogging isPushSupported requestPushPermission isPushPermissionGranted".split(" "),
-        i=0;i<s.length;i++
-      ){
-        a.braze[s[i]]=function(){a.brazeQueue.push(arguments)}
-      }
-      (y=p.createElement(P)).type='text/javascript';
-      y.src='https://js.appboycdn.com/web-sdk/6.5/braze.min.js';
-      y.async=1;
-      (b=p.getElementsByTagName(P)[0]).parentNode.insertBefore(y,b)
-    }(window,document,'script');
+    +function(a,p,P,b,y){a.braze={};a.brazeQueue=[];for(var s="initialize openSession changeUser logCustomEvent automaticallyShowInAppMessages getUser requestImmediateDataFlush toggleLogging isPushSupported requestPushPermission isPushPermissionGranted".split(" "),i=0;i<s.length;i++){a.braze[s[i]]=function(){a.brazeQueue.push(arguments)}}(y=p.createElement(P)).type='text/javascript';y.src='https://js.appboycdn.com/web-sdk/6.5/braze.min.js';y.async=1;(b=p.getElementsByTagName(P)[0]).parentNode.insertBefore(y,b)}(window,document,'script');
   </script>
 </head>
-
 <body>
 
   <div class="card">
+    <div id="badge" class="status-badge">SDK Offline</div>
     <h2>Braze SEL Sandbox</h2>
-    <div class="subtitle">
-      End-to-end Web SDK demo<br/>
-      (Check DevTools Console)
-    </div>
+    
+    <button id="btn-1" onclick="startBraze()" class="active">1. Initialize SDK <span>➔</span></button>
+    <button id="btn-2" onclick="loginUser()">2. Identify User <span>➔</span></button>
+    <button id="btn-3" onclick="triggerEvent()">3. Trigger IAM <span>➔</span></button>
+    <button id="btn-4" onclick="enablePush()">4. Enable Web Push <span>➔</span></button>
 
-    <button onclick="startBraze()">1. Start Braze Session</button>
-    <button onclick="loginUser()">2. Login & Identify User</button>
-    <button onclick="triggerEvent()">3. Trigger Engagement (IAM)</button>
-    <button onclick="enablePush()">4. Enable Web Push</button>
-
-    <div class="log-hint">
-      Open Console (F12) to view SDK logs
+    <div id="console-feed">
+      <div class="log-entry">> Awaiting initialization...</div>
     </div>
   </div>
 
   <script>
     let isInitialized = false;
 
-    // STEP 1: SDK INITIALIZATION
+    function uiLog(msg, isSuccess = false) {
+      const feed = document.getElementById('console-feed');
+      const entry = document.createElement('div');
+      entry.className = isSuccess ? 'log-entry success' : 'log-entry';
+      entry.innerHTML = `> ${msg}`;
+      feed.prepend(entry);
+    }
+
     function startBraze() {
       if (isInitialized) return;
 
@@ -140,11 +82,7 @@
         baseUrl: "sondheim.braze.com",
         enableLogging: true,
         allowUserSuppliedJavascript: true,
-
-        // Braze manages the service worker registration automatically
         manageServiceWorkerExternally: false,
-
-        // Required for GitHub Pages since the app is not hosted at domain root
         serviceWorkerLocation: "/braze-web-sdk-sandbox/service-worker.js"
       });
 
@@ -152,53 +90,49 @@
       braze.openSession();
 
       isInitialized = true;
-      console.log("Braze initialized successfully");
+      document.getElementById('btn-1').classList.add('completed');
+      document.getElementById('btn-1').innerHTML = '1. SDK Active <span>✅</span>';
+      document.getElementById('btn-2').classList.add('active');
+      document.getElementById('badge').innerHTML = "SDK Online";
+      document.getElementById('badge').style.background = "#d1fae5";
+      uiLog("Braze Initialized", true);
     }
 
-    // STEP 2: USER IDENTIFICATION
     function loginUser() {
-      if (!isInitialized) return alert("Run Step 1 first!");
-
-      const externalId = "SEL_TEST_" + Date.now();
-      braze.changeUser(externalId);
-      braze.getUser().setFirstName("BrazeSEL");
+      if (!isInitialized) return uiLog("Error: Initialize first");
+      const extId = "SEL_USER_" + Math.floor(Math.random()*1000);
+      braze.changeUser(extId);
+      braze.getUser().setFirstName("SEL_Expert");
       braze.requestImmediateDataFlush();
-
-      console.log("User identified:", externalId);
-      alert("User logged in:\n" + externalId);
+      
+      document.getElementById('btn-2').classList.add('completed');
+      document.getElementById('btn-2').innerHTML = `2. Identified: ${extId} <span>✅</span>`;
+      document.getElementById('btn-3').classList.add('active');
+      uiLog(`User changed to: ${extId}`, true);
     }
 
-    // STEP 3: IN-APP MESSAGE TRIGGER
     function triggerEvent() {
-      if (!isInitialized) return alert("Run Step 1 first!");
-
+      if (!isInitialized) return;
       braze.logCustomEvent("web_sdk_test_event");
       braze.requestImmediateDataFlush();
-
-      console.log("Custom event logged");
+      uiLog("Event: web_sdk_test_event logged", true);
     }
 
-    // STEP 4: WEB PUSH REGISTRATION
     function enablePush() {
-      if (!isInitialized) return alert("Run Step 1 first!");
-
-      if (braze.isPushSupported()) {
-        braze.requestPushPermission(
-          () => {
-            setTimeout(() => {
-              if (braze.isPushPermissionGranted()) {
-                alert("Push enabled successfully!");
-                braze.requestImmediateDataFlush();
-              } else {
-                alert("Permission granted, but registration failed.");
-              }
-            }, 2000);
-          },
-          err => console.error("Push error:", err)
-        );
-      } else {
-        alert("Web Push is not supported in this browser.");
-      }
+      if (!isInitialized) return;
+      uiLog("Requesting push permission...");
+      
+      braze.requestPushPermission(() => {
+        setTimeout(() => {
+          if (braze.isPushPermissionGranted()) {
+            document.getElementById('btn-4').classList.add('completed');
+            document.getElementById('btn-4').innerHTML = '4. Push Enabled <span>✅</span>';
+            uiLog("Web Push Registered Successfully!", true);
+          } else {
+            uiLog("Error: SW registration failed.");
+          }
+        }, 2000);
+      }, err => uiLog("Push Denied or Error"));
     }
   </script>
 </body>
