@@ -1,26 +1,106 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <!--
+    Basic HTML metadata
+    -------------------
+    - Sets character encoding
+    - Defines responsive behavior
+    - Page title used in browser tab
+  -->
   <meta charset="UTF-8" />
   <title>Braze SEL Web SDK Sandbox</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
+  <!--
+    Simple UI styling
+    -----------------
+    This styling is intentionally minimal and self-contained.
+    The goal is clarity for demos and debugging, not production UI.
+  -->
   <style>
-    body { font-family: 'Segoe UI', sans-serif; background: #f0f2f5; padding: 40px; text-align: center; }
-    .card { background: white; padding: 30px; border-radius: 12px; shadow: 0 4px 15px rgba(0,0,0,0.1); display: inline-block; min-width: 350px; }
-    button { display: block; width: 100%; margin: 12px 0; padding: 12px; cursor: pointer; background: #0073eb; color: white; border: none; border-radius: 6px; font-weight: 600; }
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f0f2f5;
+      padding: 40px;
+      text-align: center;
+    }
+    .card {
+      background: white;
+      padding: 30px;
+      border-radius: 12px;
+      shadow: 0 4px 15px rgba(0,0,0,0.1);
+      display: inline-block;
+      min-width: 350px;
+    }
+    button {
+      display: block;
+      width: 100%;
+      margin: 12px 0;
+      padding: 12px;
+      cursor: pointer;
+      background: #0073eb;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-weight: 600;
+    }
     button:hover { background: #005bbd; }
-    .log-hint { font-size: 12px; color: #666; margin-top: 10px; }
+    .log-hint {
+      font-size: 12px;
+      color: #666;
+      margin-top: 10px;
+    }
   </style>
 
+  <!--
+    Braze Web SDK Asynchronous Loader
+    --------------------------------
+    This snippet:
+    - Creates a temporary `brazeQueue`
+    - Allows calling Braze methods before the SDK finishes loading
+    - Is the recommended pattern from Braze documentation
+
+    Only the methods needed for this sandbox are defined to keep
+    the implementation focused and readable.
+  -->
   <script type="text/javascript">
-    +function(a,p,P,b,y){a.braze={};a.brazeQueue=[];for(var s="initialize openSession changeUser logCustomEvent automaticallyShowInAppMessages getUser requestImmediateDataFlush toggleLogging isPushSupported requestPushPermission isPushPermissionGranted".split(" "),i=0;i<s.length;i++){a.braze[s[i]]=function(){a.brazeQueue.push(arguments)}}
-    (y=p.createElement(P)).type='text/javascript';y.src='https://js.appboycdn.com/web-sdk/6.5/braze.min.js';y.async=1;(b=p.getElementsByTagName(P)[0]).parentNode.insertBefore(y,b)
+    +function(a,p,P,b,y){
+      a.braze={};
+      a.brazeQueue=[];
+
+      // Define only the Braze methods used in this sandbox
+      for(
+        var s="initialize openSession changeUser logCustomEvent automaticallyShowInAppMessages getUser requestImmediateDataFlush toggleLogging isPushSupported requestPushPermission isPushPermissionGranted".split(" "),
+        i=0;
+        i<s.length;
+        i++
+      ){
+        a.braze[s[i]]=function(){
+          a.brazeQueue.push(arguments)
+        }
+      }
+
+      // Load the Braze SDK from Braze CDN asynchronously
+      (y=p.createElement(P)).type='text/javascript';
+      y.src='https://js.appboycdn.com/web-sdk/6.5/braze.min.js';
+      y.async=1;
+      (b=p.getElementsByTagName(P)[0]).parentNode.insertBefore(y,b)
     }(window,document,'script');
   </script>
 </head>
+
 <body>
 
+  <!--
+    Demo UI container
+    -----------------
+    Each button maps directly to a learning objective:
+    1. SDK initialization
+    2. User identification
+    3. Engagement trigger
+    4. Web push registration
+  -->
   <div class="card">
     <h2>Braze SEL Sandbox</h2>
     <p class="log-hint">Check Console (F12) for real-time logs</p>
@@ -32,69 +112,133 @@
   </div>
 
   <script>
+    /*
+      Initialization guard
+      --------------------
+      Prevents accidental re-initialization of the Braze SDK,
+      which can cause configuration flags to be ignored.
+    */
     let isInitialized = false;
 
-    // STEP 1: INITIALIZATION
+    // ======================================================
+    // STEP 1: SDK INITIALIZATION
+    // ======================================================
     function startBraze() {
-  if (isInitialized) return;
+      if (isInitialized) return;
 
-  braze.initialize("88884959-92fe-4bd7-ab6b-6660b1c9e859", {
-    baseUrl: "sondheim.braze.com",
-    enableLogging: true,
-    allowUserSuppliedJavascript: true,
-    manageServiceWorkerExternally: false, // Let Braze handle the registration
-    
-    // THIS IS THE CRITICAL LINE FOR GITHUB PAGES:
-    serviceWorkerLocation: "/braze-web-sdk-sandbox/service-worker.js" 
-  });
+      /*
+        Braze SDK initialization
+        ------------------------
+        - Uses Web SDK API key and endpoint
+        - Enables debug logging
+        - Allows HTML In-App Messages
+        - Lets Braze manage the service worker
+        - Explicitly defines service worker location for GitHub Pages
+      */
+      braze.initialize("88884959-92fe-4bd7-ab6b-6660b1c9e859", {
+        baseUrl: "sondheim.braze.com",
+        enableLogging: true,
+        allowUserSuppliedJavascript: true,
+        manageServiceWorkerExternally: false, // Braze registers the service worker
+        
+        // Critical when hosting under a subdirectory (e.g. GitHub Pages)
+        serviceWorkerLocation: "/braze-web-sdk-sandbox/service-worker.js"
+      });
 
-  braze.automaticallyShowInAppMessages();
-  braze.openSession();
-  isInitialized = true;
-  console.log("Braze: Initialized with explicit SW location");
-}
+      // Automatically render any In-App Messages received
+      braze.automaticallyShowInAppMessages();
+
+      // Opens a new Braze session
+      braze.openSession();
+
+      isInitialized = true;
+      console.log("Braze: Initialized with explicit SW location");
+    }
+
+    // ======================================================
     // STEP 2: USER IDENTIFICATION
+    // ======================================================
     function loginUser() {
       if (!isInitialized) return alert("Run Step 1 first!");
-      
+
+      /*
+        changeUser()
+        ------------
+        Associates the session with a persistent external ID.
+        This is required for:
+        - User profile creation
+        - Push token association
+        - Long-term personalization
+      */
       const externalId = "SEL_TEST_" + Date.now();
-      braze.changeUser(externalId); // Critical for profile persistence
+      braze.changeUser(externalId);
+
+      // Set a simple user attribute for visibility in the dashboard
       braze.getUser().setFirstName("BrazeSEL");
-      braze.requestImmediateDataFlush(); // Pushes data to dashboard instantly
-      
+
+      // Immediately flush data to Braze for fast verification
+      braze.requestImmediateDataFlush();
+
       console.log("Braze: User identified as " + externalId);
       alert("User Logged In: " + externalId);
     }
 
-    // STEP 3: CUSTOM EVENT (IAM TRIGGER)
+    // ======================================================
+    // STEP 3: ENGAGEMENT TEST (IN-APP MESSAGE)
+    // ======================================================
     function triggerEvent() {
       if (!isInitialized) return alert("Run Step 1 first!");
-      
-      braze.logCustomEvent("web_sdk_test_event"); // Matches your Dashboard trigger
+
+      /*
+        Custom event logging
+        --------------------
+        This event is used as the trigger for an
+        In-App Message campaign in the Braze dashboard.
+      */
+      braze.logCustomEvent("web_sdk_test_event");
+
+      // Force immediate delivery to Braze
       braze.requestImmediateDataFlush();
-      console.log("Braze: Custom event logged. Message should appear if campaign is active.");
+
+      console.log(
+        "Braze: Custom event logged. Message should appear if campaign is active."
+      );
     }
 
+    // ======================================================
     // STEP 4: WEB PUSH REGISTRATION
+    // ======================================================
     function enablePush() {
       if (!isInitialized) return alert("Run Step 1 first!");
 
+      // Verify browser support before prompting
       if (braze.isPushSupported()) {
+
+        /*
+          requestPushPermission()
+          -----------------------
+          - Triggers the browser permission prompt
+          - Braze handles token registration internally
+        */
         braze.requestPushPermission(
           (permission) => {
             console.log("Browser permission: " + permission);
-            
-            // Give the browser a moment to register the Service Worker
+
+            // Delay allows service worker registration to complete
             setTimeout(() => {
               if (braze.isPushPermissionGranted()) {
                 alert("Push Success! Service Worker is registered.");
                 braze.requestImmediateDataFlush();
               } else {
-                alert("Permission granted, but registration failed. Check if service-worker.js is in your GitHub root.");
+                alert(
+                  "Permission granted, but registration failed. Check service-worker.js location."
+                );
               }
             }, 2000);
           },
-          (err) => { console.error("Push Error:", err); }
+          (err) => {
+            console.error("Push Error:", err);
+          }
         );
       } else {
         alert("Web Push is not supported in this browser.");
